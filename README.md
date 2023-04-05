@@ -111,3 +111,4 @@ In the remaining weeks, we plan to identify which algorithms to use, and actuall
 ## Acknowledgements
 
 This project proposal is written by Bell Luo and Jiayi Chen. We worked at the same time using the "Live Share" extension in VScode, so it is expected to only see one person's meaningful commits.
+
