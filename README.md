@@ -61,6 +61,8 @@ These datasets are publicly available and can be accessed through the following 
 
 ### Jiayi
 
+As I mentioned in my initial goal setting, I'm more interested in the implementation and experimentation aspects of machine learning. In that sense, I believe this project offers an excellent opportunity for me to explore and apply various algorithms, such as RNN and CNN, in a real-world context. By working on this project, I will be able to develop a deeper knowledge of supervised learning algorithms, as well as their practical applications in the field of housing price prediction.
+
 ### Bell
 
 ## Risk Statement
