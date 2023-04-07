@@ -65,6 +65,12 @@ As I mentioned in my initial goal setting, I'm more interested in the implementa
 
 ### Bell
 
+In *implementation*, I aim to implement algorithms, conduct quality checks, and/or write automated testing for the project.
+
+In *experimentation* and *communication*, I aim to draft & revise designated sections of the project report and presentation.
+
+In *social responsibility*, I aim to critically engage with the associated risks and ethics of this project, as mentioned below.
+
 ## Risk Statement
 
 - **Representativeness**
