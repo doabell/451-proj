@@ -1,4 +1,4 @@
-USPS	GEOID	ANSICODE	NAME	ALAND	AWATER	ALAND_SQMI	AWATER_SQMI	INTPTLAT	INTPTLONG                                                                                                               
+USPS	GEOID	ANSICODE	NAME	ALAND	AWATER	ALAND_SQMI	AWATER_SQMI	INTPTLAT	INTPTLONG
 AL	01001	00161526	Autauga County	1539631461	25677536	594.455	9.914	32.532237	-86.64644                                                                                                                  
 AL	01003	00161527	Baldwin County	4117724893	1132887353	1589.863	437.41	30.659218	-87.746067                                                                                                             
 AL	01005	00161528	Barbour County	2292160151	50523213	885.008	19.507	31.870253	-85.405104                                                                                                                
