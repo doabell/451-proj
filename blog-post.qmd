@@ -1,0 +1,165 @@
+---
+title: Housing Price Prediction
+author: Jiayi Chen & Bell Luo
+date: '2023-05-19'
+image: "cover.jpg"
+description: "In this final project, Bell and I formed a team and decided on a research topic: Housing Price Prediction.
+    It has been a valuable learning experience in terms of implementing machine learning algorithms and conducting real-world data analysis."
+format: html
+toc: true
+bibliography: refs.bib
+---
+
+## **Abstract**
+
+Our project utilized (classical and deep) machine learning techniques to analyze and predict housing prices across different counties in the United States, 
+with a focus on understanding the most impactful factors.
+We were able to carefully identify, select, and merge datasets containing variables related to housing, population, and geo-spatial features.
+After constructing several models, including classical ones via `scikit-learn` and a neural network via `PyTorch`, 
+we found that the highest accuracy was achieved by our Random Forest model, 
+followed by Gradient Boosting regression;
+the neural network performed relative poorly.
+These models helped us to identify some of the most important factors of housing prices, including median income, education attainment, and perhaps surprisingly, longtitude.
+The relevant source code is hosted on [Github](https://github.com/doabell/451-proj).
+
+## **Introduction**
+
+Housing prices are a crucial aspect of the American economy.
+It directly influences various sectors, including the real estate industry, financial markets, and consumers' purchasing power.
+Understanding the determinants of housing prices is therefore essential for potential house buyers, sellers, renters, and city planners alike.
+Thus, this project aims to dissect the relationship between housing prices, demographic, and socioeconomic indicators across US counties.
+We believe our project can inform these relevant sectors, empower relevant stakeholders, and pave the way for future work on what actually influences housing prices.
+
+@ho2021predicting studys property price prediction using three machine learning algorithms,
+including Support Vector Machines (SVM), Random Forest (RF), and a Gradient Boosting Machine (GBM).
+Their study finds that RF and GBM provided superior performance over SVM.
+In our work, we also incorporate Random Forest models due to their demonstrated efficacy and robustness.
+Interpretability is also a key advantage of Random Forest models.
+
+Similarly, @thamarai2020house highlights the importance of utilizing different house-level attributes for price prediction, 
+such as the number of bedrooms, age of the house, and proximity to essential facilities like schools and shopping malls. 
+We too consider a multitude of housing factors, albeit not directly due to the nature of the US Census, 
+and additional socioeconomic features in our analysis. 
+
+In the meantime, @zulkifley2020house emphasizes the importance of data mining in predicting housing prices,
+and finds that locational and structural attributes significantly influence such predictions.
+As such, our comprehensive set of features include geospatial information, 
+including position and land area, in line with this recommendation.
+
+Through our analysis, we aim to contribute to this growing body of research,
+and provide further, timely insight into housing price prediction and its influencing factors.
+
+## **Value Statement**
+
+These are **the users** and **potential beneficiaries** of our project:
+
+- Potential home-buyers and renters, who can make informed decisions when purchasing properties
+- Real estate professionals, who can provide better guidance to their clients
+- Urban planners and policymakers, who can make more informed decisions regarding zoning, land use, and housing policies
+- Social workers, who can identify driving factors of inequality in housing and rent prices, and prioritize advocating for change in these key areas
+
+These are the **potentially excluded** from benefit **or harmed** by our project:
+
+- Marginalized populations, who may be underrepresented or misrepresented in the data, so our model may not accurately reflect their needs and wants
+- Residents of certain reguins with inaccurate predictions, leading to incorrect conclusions about said region, and / or suboptimal buying / renting decisions
+
+**Personal Reasons**:
+
+I chose this project because I believe a healthy house market is essential for the growth of an economy. It is relevant to everyone, so I'm interested in exploring those possible factors that might contribute to the housing price.
+
+**Conclusion**:
+
+We are confident that the world will be a more equitable and sustainable place under the assumption that our data sources represent different demographics and regions fairly, and the world is a better place when housing prices are low and equitable across demographics.
+
+## **Materials and Methods**
+
+### **Data**
+
+There are two main data resources: Zillow nad US census. We also collected other explanatory predictors such as land area and geospatial information (longitude & latitude) from other sources.
+
+The US census data is from the 2017-2021 ACS 5-Year PUMS (American Community Survey, Public Use Microdata Sample), through the Census API: [PUMS Documentation](https://www.census.gov/programs-surveys/acs/microdata/documentation.html). The dataset contains information from the Census Bureau about individual people or housing units. We believe it is a representative and authoritative source of information for various demographic and economic factors that can influence housing prices and affordability. 
+
+Zillow Housing Data is a collection of datasets from Zillow, a real-estate marketplace company. It contains features include housing prices, rental prices, city, state, number of bedrooms, etc: [ZHVI All Homes (SFR, Condo/Co-op) Time Series, Smoothed, Seasonally Adjusted($), by County](https://www.zillow.com/research/data/).
+
+Lastly, we collected the geospatial data (centroids of every US county) from <Census.gov>: [U.S. Gazetteer Files 2022](https://www.census.gov/geo/maps-data/data/tiger-geodatabases.html).
+
+Hence, in our finalized dataset, each row corresponds to a US county and includes the average home value as well as other explanatory factors like median age, income, among others.
+
+Despite our best efforts in collecting comprehensive data, it's important to acknowledge a few limitations. While we gathered macro-level data from sources like Zillow and the US Census, certain micro-level factors like the exact condition of a house or neighborhood characteristics might not be fully represented. Moreover, while the US Census data is robust, it could still miss certain marginalized communities, potentially introducing biases into our findings.
+
+### **Approach**
+
+[Variable names](https://www.census.gov/data/developers/data-sets/acs-5year/2021.html): see "2021 ACS Detailed Tables Variables".
+
+We have selected the following variables:
+
+- `B01002_001E`: total median age 
+- `B01003_001E`: total population
+- `B08134_001E`: travel time to work
+- `B15012_001E`: number of Bachelor's degrees
+- `B19013_001E`: median household income, inflation-adjusted
+- `B19083_001E`: gini index of income inequality
+- `B23025_005E`: civilian labor force, unemployed
+- `B25001_001E`: total housing units
+- `B25002_002E`: occupancy is "occupied"
+- `B25018_001E`: median number of rooms
+- `B25035_001E`: median year of construction
+- `B25040_002E`: houses with heating fuel
+- `B25064_001E`: median gross rent
+- `B25081_001E`: count of housing units with a mortgage
+
+For bias auditing, variables `B02001_002E` to `B02001_010E` are relevant:
+
+- `B02001_002E`: White alone
+- `B02001_003E`: Black or African American alone
+- `B02001_004E`: American Indian and Alaska Native alone
+- `B02001_005E`: Asian alone
+- `B02001_006E`: Native Hawaiian and Other Pacific Islander alone
+- `B02001_007E`: Some other race alone
+- `B02001_008E`: Two or more races
+- `B02001_009E`: Two races including Some other race
+- `B02001_010E`: Two races excluding Some other race, and three or more races
+
+We used several popular classical models from `sklearn` module. Those include Simple Linear regression, Linear regression with SGD, Ridge regression, Gradient Boosting regression, Support Vector Machines, and Random Forest. We also tried to build our own Neural Network through Pytorch.
+
+## **Results**
+
+In order to evaluate those algorithms we used, we implemented two metrics to measure the relative performance:
+
+1. [Coefficient of Determination](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) (we simply called it "score"): it combines the residual sum of squares and the total sum of squares; the best possible score is 1.0 and it can be negative (because the model can be arbitrarily worse).
+2. Mean Squared Error (MSE): it represents the average of the squared differences between the predicted and actual values. In other words, it quantifies the difference between the estimator (the model's prediction) and the actual value.
+
+Our random forest model achieved a score of 0.9109, while having a MSE of 1.60781e+09.
+
+Here is a rundown of our models' performance, listed in order of decreasing test scores:
+
+1. Random Forest Regression
+2. Gradient Boosting Regression
+3. Support Vector Regression
+4. Ridge Regression
+5. Linear Regression
+
+## **Concluding Discussion**
+
+In what ways did our project work?
+Did we meet the goals that we set at the beginning of the project?
+How do our results compare to the results of others who have also studied similar problems?
+If we had more time, data, or computational resources, what might we do differently in order to improve further?
+
+## **Group Contributions Statement**
+
+We usually meet and work together at every week. Bell was mainly responsible for data preprocessing and visualization. He wrote scripts to clean and merge the data. He also generated insightful visualizations such as the interactive map. In the meantime, he designed and executed numerous experiments, with a particular focus on model validation and performance assessment. Then he carried out several classical model experiments, particularly related to feature importance. Jiayi primarily focused on neural network's source code. He was mainly coding the core algorithms and performing several experiments related to hyperparameter tuning. He also helped in finding suitable datasets and selecting variables, as well as plotting multicollinear features. Lastly, we worked on the slides and writings together.
+
+## **Personal Reflection**
+
+- *What did you learn from the process of researching, implementing, and communicating about your project?*
+
+Doing this project taught me a bunch of things. For one, I realized how research isn't just about using existing dataset but also about getting creative - like when we had to combine different datasets to get what we needed. I also learned that implementation is about more than just applying algorithms. For example, we developed our own neural network by applying multiple layers. As for communication, I got to see how essential it is to summarize what I have done and communicate it with my peers, which is something I'll definitely carry forward.
+
+- *How do you feel about what you achieved? Did meet your initial goals? Did you exceed them or fall short? In what ways?*
+
+I'm honestly pretty proud of what we achieved. I started off wanting to explore the practical applications of supervised learning algorithms in predicting housing prices, and I feel like we did just that and then some. We didn't just use an existing dataset - we created our own by merging several together, which was a challenge but so rewarding. What's more, I learned how to convert my the dataset to appropriate dataloader. So I'd say we definitely met and even exceeded our goals.
+
+- *In what ways will you carry the experience of working on this project into your next courses, career stages, or personal life?*
+
+This project has given me some solid experience that I'm confident to handle future challenges. The technical skills I've learned and the ability to work collaboratively are valuable to me. I will be sure to carry out that working philosophy in my future academic and career life.
