@@ -89,7 +89,8 @@ the US housing market has the potential to become more equitable, just, and sust
 
 ### Data
 
-We utilized two main data sources: Zillow, and the US Census Bureau.
+We utilized two main data sources: @zillow_2011_housing, 
+and the @uscensusbureau_2021_acs.
 We also collected other explanatory predictors, 
 such as land area and geospatial information (longitude & latitude), 
 that are also from the Census Bureau.
@@ -105,7 +106,7 @@ It contains features include housing prices, rental prices, city, state, etc.
 The relevant data can be accessed [here](https://www.zillow.com/research/data/), 
 under "ZHVI All Homes (SFR, Condo/Co-op) Time Series, Smoothed, Seasonally Adjusted($), by County".
 
-Lastly, we collected the geospatial data from Census.gov: 
+Lastly, we collected geospatial data for each county from @uscensusbureau_2022_gazetteer:
 [U.S. Gazetteer Files 2022](https://www.census.gov/geo/maps-data/data/tiger-geodatabases.html).
 
 In our finalized dataset, each row corresponds to a US county as an observation.
@@ -125,7 +126,7 @@ potentially introducing biases into our findings.
 A full list of these variable names can be found [here](https://www.census.gov/data/developers/data-sets/acs-5year/2021.html),
 under "2021 ACS Detailed Tables Variables".
 
-We were able to select the following variables:
+We were able to select the following independent variables:
 
 - `B01002_001E`: total median age 
 - `B01003_001E`: total population
@@ -142,7 +143,11 @@ We were able to select the following variables:
 - `B25064_001E`: median gross rent
 - `B25081_001E`: count of housing units with a mortgage
 
-For potential bias auditing, we also kept these relevant variables:
+Our dependent variable is Zillow's *Home Value Index* for 2021, 
+which reflects the "typical home value" for houses in a county.
+Zillow reports this index per month, so the average is taken for the entirety of 2021.
+
+For future bias auditing, we also kept these relevant variables:
 
 - `B02001_002E`: White alone
 - `B02001_003E`: Black or African American alone
@@ -177,6 +182,8 @@ These include Linear regression, Linear regression with SGD, Ridge regression, G
 
 We also proceeded to build our own fully-connected neural network using PyTorch.
 
+### Model Performance
+
 In order to evaluate those algorithms we used, we implemented two metrics to measure the relative performance:
 
 1. [Coefficient of determination](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html).
@@ -187,17 +194,30 @@ In order to evaluate those algorithms we used, we implemented two metrics to mea
     This represents the average of the squared differences between the predicted and actual values.
     In other words, it quantifies the difference between the estimator (the model's prediction) and the actual value.
 
-Our random forest model achieved a score of `0.9109`, while having a MSE of `1.60781e+09`.
+The following table lists the $R^2$ scores and MSEs for our models, in order of decreasing performance:
 
-Here is a rundown of our top 5 models' performance, listed in order of decreasing test scores:
+|                            | Score  | MSE ($\times 10^9$) |
+|----------------------------|--------|---------------------|
+| Random Forest              | 0.9109 | 1.6078              |
+| Gradient Boosting          | 0.8612 | 2.5038              |
+| Linear Regression with SGD | 0.7677 | 4.1899              |
+| Ridge Regression           | 0.7675 | 4.1939              |
+| Linear Regression          | 0.7673 | 4.1976              |
+| Support Vector Machine     | 0.7327 | 4.8206              |
+| Neural Network             | 0.5231 | 8.6008              |
 
-1. Random Forest Regression
-2. Gradient Boosting Regression
-3. Support Vector Regression
-4. Ridge Regression
-5. Linear Regression
+: Model Performance on Test Set
 
-Additionally, here are the top 5 features, ordered by importance (as determined by Random Forest):
+We observe that tree-based models, like Random Forest and Gradient Boosting (an improvement on Decision Trees), 
+perform well on our dataset, followed by linear regression-like models, and then Support Vector Machines.
+
+The fully-connected neural network performed poorly on our regression task.
+
+### Feature Importance
+
+![Permutation Feature Importance for our Random Forest model](pfi-random-forest.png)
+
+Here are the top 5 features ordered by importance, as determined by our Random Forest model:
 
 1. `B19013_001E`: median household income, inflation-adjusted
 2. `INTPTLONG`: longitude (decimal degrees)
@@ -209,12 +229,32 @@ Note that feature importance is not the same as a coefficient in linear regressi
 as the relationship may not be linear.
 In our Random Forest regressor model, particularly, the corresponding explanation is most likely segmented and discrete.
 
+### Feature correlation
+
 ## Concluding Discussion
 
-In what ways did our project work?
-Did we meet the goals that we set at the beginning of the project?
-How do our results compare to the results of others who have also studied similar problems?
-If we had more time, data, or computational resources, what might we do differently in order to improve further?
+Our project **worked** in the following ways:
+
+We were able to apply our learning in the course to predict housing prices across US counties.
+We also learned a lot more about machine learning models,
+in particular the nuances and technicalities concerning feature importance, correlated features, and 
+
+We also applied our learning to implement a fully-connected neural network, 
+and verified its subpar performance on tabular data.
+
+Our **project goals** were partially met, 
+in that our data processing, model implementation, model evaluation, 
+and analysis on feature importance are complete.
+
+We were hoping to identify a comprehensive framework for auditing bias,
+but were unable to find a methodology that goes beyond arbitrarily comparing cross-sectional trends and biases.
+Therefore, we did not deliver any bias audits, despite having relevant data available.
+
+**Given more time**, we may be able to focus on bias auditing, 
+and reproducing models from previous literature to evaluate our model's performance.
+There is also an opportunity for field research on our model's predictions, 
+potentially through interviews, simulated auctioning events, or case studies for existing homes.
+
 
 ## Group Contributions Statement
 
@@ -232,7 +272,9 @@ He also performed several experiments related to hyperparameter tuning.
 He helped in finding suitable datasets and selecting relevant variables, as well as identifying and plotting multicollinear features.
 Additionally, he gathered materials into a preliminary version of this blog post.
 
-The project proposal, presentation slides, and this blog post are of equal contribution between the two authors.
+The project proposal, presentation slides, 
+and this blog post are of equal contribution between the two authors.
+(This excludes the "personal reasons" and "Personal Reflection" sections.)
 
 ## Personal Reflection
 
